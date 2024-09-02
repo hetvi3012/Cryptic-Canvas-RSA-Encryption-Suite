@@ -35,8 +35,6 @@ Cryptic Canvas is a web-based RSA Encryption Suite designed to provide robust, s
    ```sh
    python app.py
 
-
-
 ## Usage
 
 1. **Generate RSA Keys:** Navigate to the home page and click on 'Generate Keys' to start the process of key generation.
