@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption/Decryption Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>RSA Encryption/Decryption</h1>
+        <div>
+            <button id="generate-keys" class="btn btn-primary">Generate Keys</button>
+            <div id="keys" class="mt-2"></div>
+        </div>
+        <div class="mt-4">
+            <h2>Encrypt Message</h2>
+            <textarea id="plaintext" class="form-control" placeholder="Enter message to encrypt"></textarea>
+            <button id="encrypt" class="btn btn-success mt-2">Encrypt</button>
+            <div id="encrypted" class="mt-2"></div>
+        </div>
+        <div class="mt-4">
+            <h2>Decrypt Message</h2>
+            <textarea id="ciphertext" class="form-control" placeholder="Enter message to decrypt"></textarea>
+            <button id="decrypt" class="btn btn-danger mt-2">Decrypt</button>
+            <div id="decrypted" class="mt-2"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            let keys = {};
+
+            $('#generate-keys').click(function() {
+                $.ajax({
+                    url: '/generate-keys',
+                    type: 'GET',
+                    success: function(response) {
+                        keys.public_key_1 = `${response.public_key_1[0]},${response.public_key_1[1]}`;
+                        keys.private_key_1 = `${response.private_key_1[0]},${response.private_key_1[1]}`;
+                        keys.public_key_2 = `${response.public_key_2[0]},${response.public_key_2[1]}`;
+                        keys.private_key_2 = `${response.private_key_2[0]},${response.private_key_2[1]}`;
+                        keys.public_key_3 = `${response.public_key_3[0]},${response.public_key_3[1]}`;
+                        keys.private_key_3 = `${response.private_key_3[0]},${response.private_key_3[1]}`;
+                        keys.public_key_4 = `${response.public_key_4[0]},${response.public_key_4[1]}`;
+                        keys.private_key_4 = `${response.private_key_4[0]},${response.private_key_4[1]}`;
+
+                        $('#keys').html(`
+                            <b>Key Pair 1:</b><br>
+                            Public Key 1: (${keys.public_key_1})<br>
+                            Private Key 1: (${keys.private_key_1})<br><br>
+
+                            <b>Key Pair 2:</b><br>
+                            Public Key 2: (${keys.public_key_2})<br>
+                            Private Key 2: (${keys.private_key_2})<br><br>
+
+                            <b>Key Pair 3:</b><br>
+                            Public Key 3: (${keys.public_key_3})<br>
+                            Private Key 3: (${keys.private_key_3})<br><br>
+
+                            <b>Key Pair 4:</b><br>
+                            Public Key 4: (${keys.public_key_4})<br>
+                            Private Key 4: (${keys.private_key_4})<br><br>
+                        `);
+                    }
+                });
+            });
+
+            $('#encrypt').click(function() {
+                const message = $('#plaintext').val();
+                $.ajax({
+                    url: '/encrypt',
+                    type: 'POST',
+                    data: {
+                        message: message,
+                        public_key_1: keys.public_key_1,
+                        private_key_2: keys.private_key_2
+                    },
+                    success: function(response) {
+                        $('#encrypted').html(`Encrypted Message: ${response.encrypted_message}`);
+                        $('#ciphertext').val(response.encrypted_message);
+                    }
+                });
+            });
+
+            $('#decrypt').click(function() {
+                const encryptedMessage = $('#ciphertext').val();
+                $.ajax({
+                    url: '/decrypt',
+                    type: 'POST',
+                    data: {
+                        encrypted_message: encryptedMessage,
+                        private_key_1: keys.private_key_1,
+                        public_key_2: keys.public_key_2
+                    },
+                    success: function(response) {
+                        $('#decrypted').html(`Decrypted Message: ${response.decrypted_message}`);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
